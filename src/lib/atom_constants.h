@@ -107,8 +107,10 @@ enum type {
 	PolarHydrogen, //(can donate) H_HD_X,
 	AliphaticCarbonXSHydrophobe, // C_C_C_H, //hydrophobic according to xscale
 	AliphaticCarbonXSNonHydrophobe, //C_C_C_P, //not hydrophobic (according to xs)
+	AliphaticCarbonXSHydrophobeCovalent, //C_C_C_H_C, //hydrophobic (according to xs) covalent 
 	AromaticCarbonXSHydrophobe, //C_A_C_H,
 	AromaticCarbonXSNonHydrophobe, //C_A_C_P,
+	AromaticCarbonXSHydrophobeCovalent, //C_A_C_H_C, covalent 
 	Nitrogen, //N_N_N_P, no hydrogen bonding
 	NitrogenXSDonor, //N_N_N_D,
 	NitrogenXSDonorAcceptor, //N_NA_N_DA, also an autodock acceptor
@@ -118,6 +120,7 @@ enum type {
 	OxygenXSDonorAcceptor, //O_OA_O_DA, also an autodock acceptor
 	OxygenXSAcceptor, //O_OA_O_A, also an autodock acceptor
 	Sulfur, //S_S_S_P,
+	SulfurCovalent, //S_S_S_P_C, covalent 
 	SulfurAcceptor, //S_SA_S_P, XS doesn't do sulfur acceptors
 	Phosphorus, //P_P_P_P,
 	Fluorine, //F_F_F_H,
@@ -169,10 +172,14 @@ const info default_data[NumTypes] = { //el, ad, xs
 				"C",	2.000000,	0.150000,	-0.001430,	33.510300,	0.770000,	1.900000,	true,	false,	false,	false},
 		{AliphaticCarbonXSNonHydrophobe, EL_TYPE_C, AD_TYPE_C, XS_TYPE_C_P,"AliphaticCarbonXSNonHydrophobe",
 				"C",	2.000000,	0.150000,	-0.001430,	33.510300,	0.770000,	1.900000,	false,	false,	false,	false},
+		{AliphaticCarbonXSHydrophobeCovalent, EL_TYPE_C, AD_TYPE_C, XS_TYPE_C_H,"AliphaticCarbonXSHydrophobeCovalent",
+				"CC",	2.000000,	0.150000,	-0.001430,	33.510300,	0.770000,	1.900000,	true,	false,	false,	false},
 		{AromaticCarbonXSHydrophobe, EL_TYPE_C, AD_TYPE_A, XS_TYPE_C_H,"AromaticCarbonXSHydrophobe",
 				"A",	2.000000,	0.150000,	-0.000520,	33.510300,	0.770000,	1.900000,	true,	false,	false,	false},
 		{AromaticCarbonXSNonHydrophobe, EL_TYPE_C, AD_TYPE_A, XS_TYPE_C_P,"AromaticCarbonXSNonHydrophobe",
 				"A",	2.000000,	0.150000,	-0.000520,	33.510300,	0.770000,	1.900000,	false,	false,	false,	false},
+		{AromaticCarbonXSHydrophobeCovalent, EL_TYPE_C, AD_TYPE_A, XS_TYPE_C_H,"AromaticCarbonXSHydrophobeCovalent",
+				"AC",	2.000000,	0.150000,	-0.000520,	33.510300,	0.770000,	1.900000,	true,	false,	false,	false},
 		{Nitrogen, EL_TYPE_N, AD_TYPE_N, XS_TYPE_N_P,"Nitrogen",
 				"N",	1.750000,	0.160000,	-0.001620,	22.449300,	0.750000,	1.800000,	false,	false,	false,	true},
 		{NitrogenXSDonor, EL_TYPE_N, AD_TYPE_N, XS_TYPE_N_D,"NitrogenXSDonor",
@@ -193,6 +200,9 @@ const info default_data[NumTypes] = { //el, ad, xs
 				"S",	2.000000,	0.200000,	-0.002140,	33.510300,	1.020000,	2.000000,	false,	false,	false,	true},
 		{SulfurAcceptor, EL_TYPE_S, AD_TYPE_SA, XS_TYPE_S_P,"SulfurAcceptor",
 				"SA",	2.000000,	0.200000,	-0.002140,	33.510300,	1.020000,	2.000000,	false,	false,	false,	true},
+		{SulfurCovalent, EL_TYPE_S, AD_TYPE_S, XS_TYPE_S_P,"SulfurCovalent",
+				"SC",	2.000000,	0.200000,	-0.002140,	33.510300,	1.020000,	2.000000,	false,	false,	false,	true},
+
 		{Phosphorus, EL_TYPE_P, AD_TYPE_P, XS_TYPE_P_P,"Phosphorus",
 				"P",	2.100000,	0.200000,	-0.001100,	38.792400,	1.060000,	2.100000,	false,	false,	false,	true},
 		{Fluorine, EL_TYPE_F, AD_TYPE_F, XS_TYPE_F_H,"Fluorine",
