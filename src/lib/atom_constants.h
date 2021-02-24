@@ -108,16 +108,23 @@ enum type {
 	AliphaticCarbonXSHydrophobe, // C_C_C_H, //hydrophobic according to xscale
 	AliphaticCarbonXSNonHydrophobe, //C_C_C_P, //not hydrophobic (according to xs)
 	AliphaticCarbonXSHydrophobeCovalent, //C_C_C_H_C, //hydrophobic (according to xs) covalent 
+	AliphaticCarbonXSNonHydrophobeCovalent, //C_C_C_P, //not hydrophobic (according to xs)
 	AromaticCarbonXSHydrophobe, //C_A_C_H,
 	AromaticCarbonXSNonHydrophobe, //C_A_C_P,
 	AromaticCarbonXSHydrophobeCovalent, //C_A_C_H_C, covalent 
+	AromaticCarbonXSNonHydrophobeCovalent, //C_A_C_P,
 	Nitrogen, //N_N_N_P, no hydrogen bonding
 	NitrogenXSDonor, //N_N_N_D,
 	NitrogenXSDonorAcceptor, //N_NA_N_DA, also an autodock acceptor
 	NitrogenXSAcceptor, //N_NA_N_A, also considered an acceptor by autodock
+	NitrogenXSDonorCovalent, //N_N_N_D,
+	NitrogenXSDonorAcceptorCovalent, //N_NA_N_DA, also an autodock acceptor
+
 	Oxygen, //O_O_O_P,
 	OxygenXSDonor, //O_O_O_D,
 	OxygenXSDonorAcceptor, //O_OA_O_DA, also an autodock acceptor
+	OxygenXSDonorCovalent, //O_O_O_D,
+	OxygenXSDonorAcceptorCovalent, //O_OA_O_DA, also an autodock acceptor
 	OxygenXSAcceptor, //O_OA_O_A, also an autodock acceptor
 	Sulfur, //S_S_S_P,
 	SulfurCovalent, //S_S_S_P_C, covalent 
@@ -174,12 +181,16 @@ const info default_data[NumTypes] = { //el, ad, xs
 				"C",	2.000000,	0.150000,	-0.001430,	33.510300,	0.770000,	1.900000,	false,	false,	false,	false},
 		{AliphaticCarbonXSHydrophobeCovalent, EL_TYPE_C, AD_TYPE_C, XS_TYPE_C_H,"AliphaticCarbonXSHydrophobeCovalent",
 				"CC",	2.000000,	0.150000,	-0.001430,	33.510300,	0.770000,	1.900000,	true,	false,	false,	false},
+		{AliphaticCarbonXSNonHydrophobeCovalent, EL_TYPE_C, AD_TYPE_C, XS_TYPE_C_P,"AliphaticCarbonXSNonHydrophobeCovalent",
+				"CC",	2.000000,	0.150000,	-0.001430,	33.510300,	0.770000,	1.900000,	false,	false,	false,	false},
 		{AromaticCarbonXSHydrophobe, EL_TYPE_C, AD_TYPE_A, XS_TYPE_C_H,"AromaticCarbonXSHydrophobe",
 				"A",	2.000000,	0.150000,	-0.000520,	33.510300,	0.770000,	1.900000,	true,	false,	false,	false},
 		{AromaticCarbonXSNonHydrophobe, EL_TYPE_C, AD_TYPE_A, XS_TYPE_C_P,"AromaticCarbonXSNonHydrophobe",
 				"A",	2.000000,	0.150000,	-0.000520,	33.510300,	0.770000,	1.900000,	false,	false,	false,	false},
 		{AromaticCarbonXSHydrophobeCovalent, EL_TYPE_C, AD_TYPE_A, XS_TYPE_C_H,"AromaticCarbonXSHydrophobeCovalent",
 				"AC",	2.000000,	0.150000,	-0.000520,	33.510300,	0.770000,	1.900000,	true,	false,	false,	false},
+		{AromaticCarbonXSNonHydrophobeCovalent, EL_TYPE_C, AD_TYPE_A, XS_TYPE_C_P,"AromaticCarbonXSNonHydrophobe",
+				"AC",	2.000000,	0.150000,	-0.000520,	33.510300,	0.770000,	1.900000,	false,	false,	false,	false},
 		{Nitrogen, EL_TYPE_N, AD_TYPE_N, XS_TYPE_N_P,"Nitrogen",
 				"N",	1.750000,	0.160000,	-0.001620,	22.449300,	0.750000,	1.800000,	false,	false,	false,	true},
 		{NitrogenXSDonor, EL_TYPE_N, AD_TYPE_N, XS_TYPE_N_D,"NitrogenXSDonor",
@@ -188,6 +199,11 @@ const info default_data[NumTypes] = { //el, ad, xs
 				"NA",	1.750000,	0.160000,	-0.001620,	22.449300,	0.750000,	1.800000,	false,	true,	true,	true},
 		{NitrogenXSAcceptor, EL_TYPE_N, AD_TYPE_NA, XS_TYPE_N_A,"NitrogenXSAcceptor",
 				"NA",	1.750000,	0.160000,	-0.001620,	22.449300,	0.750000,	1.800000,	false,	false,	true,	true},
+		{NitrogenXSDonorCovalent, EL_TYPE_N, AD_TYPE_N, XS_TYPE_N_D,"NitrogenXSDonorCovalent",
+				"NC",	1.750000,	0.160000,	-0.001620,	22.449300,	0.750000,	1.800000,	false,	true,	false,	true},
+		{NitrogenXSDonorAcceptorCovalent, EL_TYPE_N, AD_TYPE_NA, XS_TYPE_N_DA,"NitrogenXSDonorAcceptorCovalent",
+				"NN",	1.750000,	0.160000,	-0.001620,	22.449300,	0.750000,	1.800000,	false,	true,	true,	true},
+
 		{Oxygen, EL_TYPE_O, AD_TYPE_O, XS_TYPE_O_P,"Oxygen",
 				"O",	1.600000,	0.200000,	-0.002510,	17.157300,	0.730000,	1.700000,	false,	false,	false,	true},
 		{OxygenXSDonor, EL_TYPE_O, AD_TYPE_O, XS_TYPE_O_D,"OxygenXSDonor",
@@ -196,13 +212,17 @@ const info default_data[NumTypes] = { //el, ad, xs
 				"OA",	1.600000,	0.200000,	-0.002510,	17.157300,	0.730000,	1.700000,	false,	true,	true,	true},
 		{OxygenXSAcceptor, EL_TYPE_O, AD_TYPE_OA, XS_TYPE_O_A,"OxygenXSAcceptor",
 				"OA",	1.600000,	0.200000,	-0.002510,	17.157300,	0.730000,	1.700000,	false,	false,	true,	true},
+		{OxygenXSDonorCovalent, EL_TYPE_O, AD_TYPE_O, XS_TYPE_O_D,"OxygenXSDonorCovalent",
+				"OC",	1.600000,	0.200000,	-0.002510,	17.157300,	0.730000,	1.700000,	false,	true,	false,	true},
+		{OxygenXSDonorAcceptorCovalent, EL_TYPE_O, AD_TYPE_OA, XS_TYPE_O_DA,"OxygenXSDonorAcceptorCovalent",
+				"ON",	1.600000,	0.200000,	-0.002510,	17.157300,	0.730000,	1.700000,	false,	true,	true,	true},
+
 		{Sulfur, EL_TYPE_S, AD_TYPE_S, XS_TYPE_S_P,"Sulfur",
 				"S",	2.000000,	0.200000,	-0.002140,	33.510300,	1.020000,	2.000000,	false,	false,	false,	true},
 		{SulfurAcceptor, EL_TYPE_S, AD_TYPE_SA, XS_TYPE_S_P,"SulfurAcceptor",
 				"SA",	2.000000,	0.200000,	-0.002140,	33.510300,	1.020000,	2.000000,	false,	false,	false,	true},
 		{SulfurCovalent, EL_TYPE_S, AD_TYPE_S, XS_TYPE_S_P,"SulfurCovalent",
 				"SC",	2.000000,	0.200000,	-0.002140,	33.510300,	1.020000,	2.000000,	false,	false,	false,	true},
-
 		{Phosphorus, EL_TYPE_P, AD_TYPE_P, XS_TYPE_P_P,"Phosphorus",
 				"P",	2.100000,	0.200000,	-0.001100,	38.792400,	1.060000,	2.100000,	false,	false,	false,	true},
 		{Fluorine, EL_TYPE_F, AD_TYPE_F, XS_TYPE_F_H,"Fluorine",
@@ -375,9 +395,15 @@ inline smt adjust_smina_type(smt t, bool Hbonded, bool heteroBonded)
 	case AliphaticCarbonXSHydrophobe: // C_C_C_H, //hydrophobic according to xscale
 	case AliphaticCarbonXSNonHydrophobe: //C_C_C_P,
 		return heteroBonded ? AliphaticCarbonXSNonHydrophobe : AliphaticCarbonXSHydrophobe;
+	case AliphaticCarbonXSHydrophobeCovalent: // C_C_C_H, //hydrophobic according to xscale
+	case AliphaticCarbonXSNonHydrophobeCovalent: //C_C_C_P,
+		return heteroBonded ? AliphaticCarbonXSNonHydrophobeCovalent : AliphaticCarbonXSHydrophobeCovalent;
 	case AromaticCarbonXSHydrophobe: //C_A_C_H,
 	case AromaticCarbonXSNonHydrophobe: //C_A_C_P,
 		return heteroBonded ? AromaticCarbonXSNonHydrophobe : AromaticCarbonXSHydrophobe;
+	case AromaticCarbonXSHydrophobeCovalent: //C_A_C_H,
+	case AromaticCarbonXSNonHydrophobeCovalent: //C_A_C_P,
+		return heteroBonded ? AromaticCarbonXSNonHydrophobeCovalent : AromaticCarbonXSHydrophobeCovalent;
 	case NitrogenXSDonor: //N_N_N_D,
 	case Nitrogen: //N_N_N_P, no hydrogen bonding
 		return Hbonded ? NitrogenXSDonor : Nitrogen;
