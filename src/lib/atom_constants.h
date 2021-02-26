@@ -109,23 +109,36 @@ enum type {
 	AliphaticCarbonXSNonHydrophobe, //C_C_C_P, //not hydrophobic (according to xs)
 	AliphaticCarbonXSHydrophobeCovalent, //C_C_C_H_C, //hydrophobic (according to xs) covalent 
 	AliphaticCarbonXSNonHydrophobeCovalent, //C_C_C_P, //not hydrophobic (according to xs)
+	AliphaticCarbonXSHydrophobeCovNear, //C_C_C_H_C, //hydrophobic (according to xs) covalent 
+	AliphaticCarbonXSNonHydrophobeCovNear, //C_C_C_P, //not hydrophobic (according to xs)
+
 	AromaticCarbonXSHydrophobe, //C_A_C_H,
 	AromaticCarbonXSNonHydrophobe, //C_A_C_P,
 	AromaticCarbonXSHydrophobeCovalent, //C_A_C_H_C, covalent 
 	AromaticCarbonXSNonHydrophobeCovalent, //C_A_C_P,
+	AromaticCarbonXSHydrophobeCovNear, //C_A_C_H_C, covalent 
+	AromaticCarbonXSNonHydrophobeCovNear, //C_A_C_P,
+
 	Nitrogen, //N_N_N_P, no hydrogen bonding
 	NitrogenXSDonor, //N_N_N_D,
 	NitrogenXSDonorAcceptor, //N_NA_N_DA, also an autodock acceptor
 	NitrogenXSAcceptor, //N_NA_N_A, also considered an acceptor by autodock
-	NitrogenXSDonorCovalent, //N_N_N_D,
-	NitrogenXSDonorAcceptorCovalent, //N_NA_N_DA, also an autodock acceptor
+
+	NitrogenCovNear, //N_N_N_P, no hydrogen bonding
+	NitrogenXSDonorCovNear, //N_N_N_D,
+	NitrogenXSDonorAcceptorCovNear, //N_NA_N_DA, also an autodock acceptor
+	NitrogenXSAcceptorCovNear, //N_NA_N_A, also considered an acceptor by autodock
 
 	Oxygen, //O_O_O_P,
 	OxygenXSDonor, //O_O_O_D,
 	OxygenXSDonorAcceptor, //O_OA_O_DA, also an autodock acceptor
-	OxygenXSDonorCovalent, //O_O_O_D,
-	OxygenXSDonorAcceptorCovalent, //O_OA_O_DA, also an autodock acceptor
 	OxygenXSAcceptor, //O_OA_O_A, also an autodock acceptor
+
+	OxygenCovNear, //O_O_O_P,
+	OxygenXSDonorCovNear, //O_O_O_D,
+	OxygenXSDonorAcceptorCovNear, //O_OA_O_DA, also an autodock acceptor
+	OxygenXSAcceptorCovNear, //O_OA_O_A, also an autodock acceptor
+
 	Sulfur, //S_S_S_P,
 	SulfurCovalent, //S_S_S_P_C, covalent 
 	SulfurAcceptor, //S_SA_S_P, XS doesn't do sulfur acceptors
@@ -183,14 +196,23 @@ const info default_data[NumTypes] = { //el, ad, xs
 				"CC",	2.000000,	0.150000,	-0.001430,	33.510300,	0.770000,	1.900000,	true,	false,	false,	false},
 		{AliphaticCarbonXSNonHydrophobeCovalent, EL_TYPE_C, AD_TYPE_C, XS_TYPE_C_P,"AliphaticCarbonXSNonHydrophobeCovalent",
 				"CC",	2.000000,	0.150000,	-0.001430,	33.510300,	0.770000,	1.900000,	false,	false,	false,	false},
+		{AliphaticCarbonXSHydrophobeCovNear, EL_TYPE_C, AD_TYPE_C, XS_TYPE_C_H,"AliphaticCarbonXSHydrophobeCovNear",
+				"CN",	2.000000,	0.150000,	-0.001430,	33.510300,	0.770000,	1.900000,	true,	false,	false,	false},
+		{AliphaticCarbonXSNonHydrophobeCovNear, EL_TYPE_C, AD_TYPE_C, XS_TYPE_C_P,"AliphaticCarbonXSNonHydrophobeCovNear",
+				"CN",	2.000000,	0.150000,	-0.001430,	33.510300,	0.770000,	1.900000,	false,	false,	false,	false},
 		{AromaticCarbonXSHydrophobe, EL_TYPE_C, AD_TYPE_A, XS_TYPE_C_H,"AromaticCarbonXSHydrophobe",
 				"A",	2.000000,	0.150000,	-0.000520,	33.510300,	0.770000,	1.900000,	true,	false,	false,	false},
 		{AromaticCarbonXSNonHydrophobe, EL_TYPE_C, AD_TYPE_A, XS_TYPE_C_P,"AromaticCarbonXSNonHydrophobe",
 				"A",	2.000000,	0.150000,	-0.000520,	33.510300,	0.770000,	1.900000,	false,	false,	false,	false},
 		{AromaticCarbonXSHydrophobeCovalent, EL_TYPE_C, AD_TYPE_A, XS_TYPE_C_H,"AromaticCarbonXSHydrophobeCovalent",
 				"AC",	2.000000,	0.150000,	-0.000520,	33.510300,	0.770000,	1.900000,	true,	false,	false,	false},
-		{AromaticCarbonXSNonHydrophobeCovalent, EL_TYPE_C, AD_TYPE_A, XS_TYPE_C_P,"AromaticCarbonXSNonHydrophobe",
+		{AromaticCarbonXSNonHydrophobeCovalent, EL_TYPE_C, AD_TYPE_A, XS_TYPE_C_P,"AromaticCarbonXSNonHydrophobeCovalent",
 				"AC",	2.000000,	0.150000,	-0.000520,	33.510300,	0.770000,	1.900000,	false,	false,	false,	false},
+		{AromaticCarbonXSHydrophobeCovNear, EL_TYPE_C, AD_TYPE_A, XS_TYPE_C_H,"AromaticCarbonXSHydrophobeCovNear",
+				"AN",	2.000000,	0.150000,	-0.000520,	33.510300,	0.770000,	1.900000,	true,	false,	false,	false},
+		{AromaticCarbonXSNonHydrophobeCovNear, EL_TYPE_C, AD_TYPE_A, XS_TYPE_C_P,"AromaticCarbonXSNonHydrophobeCovNear",
+				"AN",	2.000000,	0.150000,	-0.000520,	33.510300,	0.770000,	1.900000,	false,	false,	false,	false},
+
 		{Nitrogen, EL_TYPE_N, AD_TYPE_N, XS_TYPE_N_P,"Nitrogen",
 				"N",	1.750000,	0.160000,	-0.001620,	22.449300,	0.750000,	1.800000,	false,	false,	false,	true},
 		{NitrogenXSDonor, EL_TYPE_N, AD_TYPE_N, XS_TYPE_N_D,"NitrogenXSDonor",
@@ -199,10 +221,15 @@ const info default_data[NumTypes] = { //el, ad, xs
 				"NA",	1.750000,	0.160000,	-0.001620,	22.449300,	0.750000,	1.800000,	false,	true,	true,	true},
 		{NitrogenXSAcceptor, EL_TYPE_N, AD_TYPE_NA, XS_TYPE_N_A,"NitrogenXSAcceptor",
 				"NA",	1.750000,	0.160000,	-0.001620,	22.449300,	0.750000,	1.800000,	false,	false,	true,	true},
-		{NitrogenXSDonorCovalent, EL_TYPE_N, AD_TYPE_N, XS_TYPE_N_D,"NitrogenXSDonorCovalent",
-				"NC",	1.750000,	0.160000,	-0.001620,	22.449300,	0.750000,	1.800000,	false,	true,	false,	true},
-		{NitrogenXSDonorAcceptorCovalent, EL_TYPE_N, AD_TYPE_NA, XS_TYPE_N_DA,"NitrogenXSDonorAcceptorCovalent",
-				"NN",	1.750000,	0.160000,	-0.001620,	22.449300,	0.750000,	1.800000,	false,	true,	true,	true},
+
+		{NitrogenCovNear, EL_TYPE_N, AD_TYPE_N, XS_TYPE_N_P,"NitrogenCovNear",
+				"NN",	1.750000,	0.160000,	-0.001620,	22.449300,	0.750000,	1.800000,	false,	false,	false,	true},
+		{NitrogenXSDonorCovNear, EL_TYPE_N, AD_TYPE_N, XS_TYPE_N_D,"NitrogenXSDonorCovNear",
+				"NN",	1.750000,	0.160000,	-0.001620,	22.449300,	0.750000,	1.800000,	false,	true,	false,	true},
+		{NitrogenXSDonorAcceptorCovNear, EL_TYPE_N, AD_TYPE_NA, XS_TYPE_N_DA,"NitrogenXSDonorAcceptorCovNear",
+				"NM",	1.750000,	0.160000,	-0.001620,	22.449300,	0.750000,	1.800000,	false,	true,	true,	true},
+		{NitrogenXSAcceptorCovNear, EL_TYPE_N, AD_TYPE_NA, XS_TYPE_N_A,"NitrogenXSAcceptorCovNear",
+				"NM",	1.750000,	0.160000,	-0.001620,	22.449300,	0.750000,	1.800000,	false,	false,	true,	true},
 
 		{Oxygen, EL_TYPE_O, AD_TYPE_O, XS_TYPE_O_P,"Oxygen",
 				"O",	1.600000,	0.200000,	-0.002510,	17.157300,	0.730000,	1.700000,	false,	false,	false,	true},
@@ -212,10 +239,15 @@ const info default_data[NumTypes] = { //el, ad, xs
 				"OA",	1.600000,	0.200000,	-0.002510,	17.157300,	0.730000,	1.700000,	false,	true,	true,	true},
 		{OxygenXSAcceptor, EL_TYPE_O, AD_TYPE_OA, XS_TYPE_O_A,"OxygenXSAcceptor",
 				"OA",	1.600000,	0.200000,	-0.002510,	17.157300,	0.730000,	1.700000,	false,	false,	true,	true},
-		{OxygenXSDonorCovalent, EL_TYPE_O, AD_TYPE_O, XS_TYPE_O_D,"OxygenXSDonorCovalent",
-				"OC",	1.600000,	0.200000,	-0.002510,	17.157300,	0.730000,	1.700000,	false,	true,	false,	true},
-		{OxygenXSDonorAcceptorCovalent, EL_TYPE_O, AD_TYPE_OA, XS_TYPE_O_DA,"OxygenXSDonorAcceptorCovalent",
-				"ON",	1.600000,	0.200000,	-0.002510,	17.157300,	0.730000,	1.700000,	false,	true,	true,	true},
+
+		{OxygenCovNear, EL_TYPE_O, AD_TYPE_O, XS_TYPE_O_P,"OxygenCovNear",
+				"ON",	1.600000,	0.200000,	-0.002510,	17.157300,	0.730000,	1.700000,	false,	false,	false,	true},
+		{OxygenXSDonorCovNear, EL_TYPE_O, AD_TYPE_O, XS_TYPE_O_D,"OxygenXSDonorCovNear",
+				"ON",	1.600000,	0.200000,	-0.002510,	17.157300,	0.730000,	1.700000,	false,	true,	false,	true},
+		{OxygenXSDonorAcceptorCovNear, EL_TYPE_O, AD_TYPE_OA, XS_TYPE_O_DA,"OxygenXSDonorAcceptorCovNear",
+				"OM",	1.600000,	0.200000,	-0.002510,	17.157300,	0.730000,	1.700000,	false,	true,	true,	true},
+		{OxygenXSAcceptorCovNear, EL_TYPE_O, AD_TYPE_OA, XS_TYPE_O_A,"OxygenXSAcceptorCovNear",
+				"OM",	1.600000,	0.200000,	-0.002510,	17.157300,	0.730000,	1.700000,	false,	false,	true,	true},
 
 		{Sulfur, EL_TYPE_S, AD_TYPE_S, XS_TYPE_S_P,"Sulfur",
 				"S",	2.000000,	0.200000,	-0.002140,	33.510300,	1.020000,	2.000000,	false,	false,	false,	true},
@@ -398,24 +430,49 @@ inline smt adjust_smina_type(smt t, bool Hbonded, bool heteroBonded)
 	case AliphaticCarbonXSHydrophobeCovalent: // C_C_C_H, //hydrophobic according to xscale
 	case AliphaticCarbonXSNonHydrophobeCovalent: //C_C_C_P,
 		return heteroBonded ? AliphaticCarbonXSNonHydrophobeCovalent : AliphaticCarbonXSHydrophobeCovalent;
+	case AliphaticCarbonXSHydrophobeCovNear: // C_C_C_H, //hydrophobic according to xscale
+	case AliphaticCarbonXSNonHydrophobeCovNear: //C_C_C_P,
+		return heteroBonded ? AliphaticCarbonXSNonHydrophobeCovNear : AliphaticCarbonXSHydrophobeCovNear;
+
 	case AromaticCarbonXSHydrophobe: //C_A_C_H,
 	case AromaticCarbonXSNonHydrophobe: //C_A_C_P,
 		return heteroBonded ? AromaticCarbonXSNonHydrophobe : AromaticCarbonXSHydrophobe;
 	case AromaticCarbonXSHydrophobeCovalent: //C_A_C_H,
 	case AromaticCarbonXSNonHydrophobeCovalent: //C_A_C_P,
 		return heteroBonded ? AromaticCarbonXSNonHydrophobeCovalent : AromaticCarbonXSHydrophobeCovalent;
+	case AromaticCarbonXSHydrophobeCovNear: //C_A_C_H,
+	case AromaticCarbonXSNonHydrophobeCovNear: //C_A_C_P,
+		return heteroBonded ? AromaticCarbonXSNonHydrophobeCovNear : AromaticCarbonXSHydrophobeCovNear;
+
 	case NitrogenXSDonor: //N_N_N_D,
 	case Nitrogen: //N_N_N_P, no hydrogen bonding
 		return Hbonded ? NitrogenXSDonor : Nitrogen;
 	case NitrogenXSDonorAcceptor: //N_NA_N_DA, also an autodock acceptor
 	case NitrogenXSAcceptor: //N_NA_N_A, also considered an acceptor by autodock
 		return Hbonded ? NitrogenXSDonorAcceptor : NitrogenXSAcceptor;
+
+	case NitrogenXSDonorCovNear: //N_N_N_D,
+	case NitrogenCovNear: //N_N_N_P, no hydrogen bonding
+		return Hbonded ? NitrogenXSDonorCovNear : NitrogenCovNear;
+	case NitrogenXSDonorAcceptorCovNear: //N_NA_N_DA, also an autodock acceptor
+	case NitrogenXSAcceptorCovNear: //N_NA_N_A, also considered an acceptor by autodock
+		return Hbonded ? NitrogenXSDonorAcceptorCovNear : NitrogenXSAcceptorCovNear;
+
 	case OxygenXSDonor: //O_O_O_D,
 	case Oxygen: //O_O_O_P,
 		return Hbonded ? OxygenXSDonor : Oxygen;
 	case OxygenXSDonorAcceptor: //O_OA_O_DA, also an autodock acceptor
 	case OxygenXSAcceptor: //O_OA_O_A, also an autodock acceptor
 		return Hbonded ? OxygenXSDonorAcceptor : OxygenXSAcceptor;
+
+	case OxygenXSDonorCovNear: //O_O_O_D,
+	case OxygenCovNear: //O_O_O_P,
+		return Hbonded ? OxygenXSDonorCovNear : OxygenCovNear;
+	case OxygenXSDonorAcceptorCovNear: //O_OA_O_DA, also an autodock acceptor
+	case OxygenXSAcceptorCovNear: //O_OA_O_A, also an autodock acceptor
+		return Hbonded ? OxygenXSDonorAcceptorCovNear : OxygenXSAcceptorCovNear;
+
+
 	default:
 		return t;
 	}
