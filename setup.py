@@ -12,7 +12,7 @@ setup(name='pdbtools',
         scripts=['bin/align_3d.py', 'bin/cal_box.py', 'bin/csv2pkl.py',
                 'bin/dist_ligand.py', 'bin/fix_ligand_ref.py',
                 'bin/fix_protein.py', 'bin/gen3d.py', 'bin/pdb2pdbqt.py',
-                'bin/pdbqt2pdb_ref.py',
+                'bin/pdbqt2pdb_ref.py', 'bin/nwalign.py',
                 'bin/split_chain.py', 'bin/split_ligand.py'
                ]
 )
