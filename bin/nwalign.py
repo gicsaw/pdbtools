@@ -318,12 +318,9 @@ def find_query_aligned_sequence(q4, d4):
 def main():
 
     if len(sys.argv) < 3:
-        print('nwalign.py query.fasta(Uniref) template.fasta(PDB)')
+        print('nwalign.py query.fasta template.fasta')
         sys.exit()
 
-
-#    file_q = 'P35968.fasta'
-#    file_d = '2OH4A.fasta'
     file_q = sys.argv[1]
     file_d = sys.argv[2]
 
