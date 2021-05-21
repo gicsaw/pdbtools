@@ -1,0 +1,12 @@
+chanels:
+    - conda-forge 
+    - bioconda
+    - anaconda
+    - rdkit
+    - tpeulen
+dependencies:
+    openbabel >=3.1.0
+    rdkit >=2020
+    pandas
+    pdbfixer
+    pymol-open-source >= 2.4
