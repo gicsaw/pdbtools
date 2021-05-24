@@ -244,7 +244,9 @@ class pdbtools(object):
                     protein_chain_residues[chain_id] = dict()
 
                 if residue_num2 in protein_chain_residues[chain_id]:
-                    protein_dict[atom_number] = 'ATOM  ' + line[6:]
+                    protein_dict[atom_number] = line
+#                    protein_dict[atom_number] = 'ATOM  ' + line[6:]
+
                     continue
 
                 if residue_name in cls.substitutions_list:
@@ -823,6 +825,8 @@ class pdbtools(object):
         molecule_atom_numbers = sorted(molecule_dict.keys())
         for atom_number in molecule_atom_numbers:
             line = molecule_dict[atom_number]
+#            if line[0:6] != 'ATOM  ':
+#                continue
             atom_idx = int(line[6:11])
             atom_name = line[12:16]
             chain = line[21]
@@ -853,6 +857,9 @@ class pdbtools(object):
                 chain_dict[chain][residue_idx2][atom_name]['residue_name'] = residue_name
 
         chain_keys = sorted(chain_dict.keys())
+#        print(chain_dict['A'].keys())
+#        print(chain_dict['A']['501'])
+#        sys.exit()
         for chain in chain_keys:
             for residue_idx2 in chain_dict[chain].keys():
                 residue_dict = chain_dict[chain][residue_idx2]
@@ -862,8 +869,26 @@ class pdbtools(object):
                     conect_list = atom_dict['conect_list']
                     atom_idx = atom_dict['atom_idx']
                     residue_name = atom_dict['residue_name']
+                    if residue_name == 'HOH':
+                        if atom_name == ' O  ':
+                            continue
+                        if atom_name[0:2] == ' H':
+                            previous_atom_list = [[' O  ', 1]]
+                            for previous_atom in previous_atom_list:
+                                previous_atom_name = previous_atom[0]
+                                previous_bond_type = previous_atom[1]
+                                previous_atom_dict = residue_dict[previous_atom_name]
+                                previous_atom_idx = previous_atom_dict['atom_idx']
+                                previous_conect_list = previous_atom_dict['conect_list']
+                                if previous_atom_idx not in conect_list:
+                                    conect_list += [previous_atom_idx] * \
+                                        previous_bond_type
+                                if atom_idx not in previous_conect_list:
+                                    previous_conect_list += [atom_idx] * \
+                                        previous_bond_type
 
-                    if atom_name == ' N  ':
+
+                    elif atom_name == ' N  ':
                         residue_idx2_previous = '%4d ' % (
                             int(residue_idx2[0:4])-1)
                         if residue_idx2_previous not in chain_dict[chain]:
@@ -945,7 +970,7 @@ class pdbtools(object):
                                         if atom_name2[: -1] == atom_name_pp2:
                                             previous_atom_list = [
                                                 [atom_name_pp, 1]]
-
+                        print(atom_name, residue_idx2,atom_idx, previous_atom_list)
                         if len(previous_atom_list) > 0:
                             for previous_atom in previous_atom_list:
                                 previous_atom_name = previous_atom[0]
@@ -973,7 +998,7 @@ class pdbtools(object):
                     conect_list = atom_dict['conect_list']
                     atom_idx = atom_dict['atom_idx']
                     conect_dict_new[atom_idx] = sorted(conect_list)
-
+        print(conect_dict_new)
         return conect_dict_new
 
     @classmethod
@@ -1204,7 +1229,7 @@ class pdbtools(object):
 #                residue_name = line[17:20].strip()
 #                residue_num2 = line[22:27]
 #                atom_number = int(line[6:11])
-                atom_name = line[12: 16].strip()
+                atom_name = line[12:16].strip()
                 if atom_name.startswith('H') and exclude_Hs:
                     continue
                 coor = [float(line[30:38]), float(
