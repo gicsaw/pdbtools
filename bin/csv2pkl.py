@@ -5,9 +5,9 @@ import argparse
 
 def main():
     parser = argparse.ArgumentParser(description='csv to pickle')
-    parser.add_argument('-i', '--csv_file', type=str, required=False,
+    parser.add_argument('-i', '--csv_file', type=str, required=True,
                         help='input csv file')
-    parser.add_argument('-o', '--pickle_file', type=str, required=False,
+    parser.add_argument('-o', '--pickle_file', type=str, required=True,
                         help='output pickle file')
 
     args = parser.parse_args()
