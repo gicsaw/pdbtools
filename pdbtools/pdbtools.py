@@ -970,7 +970,6 @@ class pdbtools(object):
                                         if atom_name2[: -1] == atom_name_pp2:
                                             previous_atom_list = [
                                                 [atom_name_pp, 1]]
-                        print(atom_name, residue_idx2,atom_idx, previous_atom_list)
                         if len(previous_atom_list) > 0:
                             for previous_atom in previous_atom_list:
                                 previous_atom_name = previous_atom[0]
@@ -998,7 +997,6 @@ class pdbtools(object):
                     conect_list = atom_dict['conect_list']
                     atom_idx = atom_dict['atom_idx']
                     conect_dict_new[atom_idx] = sorted(conect_list)
-        print(conect_dict_new)
         return conect_dict_new
 
     @classmethod
