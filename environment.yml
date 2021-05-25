@@ -5,6 +5,7 @@ chanels:
     - rdkit
     - tpeulen
 dependencies:
+    cmake
     openbabel >=3.1.0
     rdkit >=2020
     pandas
