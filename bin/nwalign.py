@@ -336,13 +336,13 @@ def main():
 #        print(d4)
 
     q3, d3, q4, d4, count = align[0]
-#    print(q4)
-#    print(d4)
+    print(q4)
+    print(d4)
 
-    query_aligned_sequence, ini, fin = find_query_aligned_sequence(q4, d4)
-    line_out = '>query:%s|template:%s|%d-%d' % (file_q, file_d, ini, fin)
-    print(line_out)
-    print(query_aligned_sequence)
+#    query_aligned_sequence, ini, fin = find_query_aligned_sequence(q4, d4)
+#    line_out = '>query:%s|template:%s|%d-%d' % (file_q, file_d, ini, fin)
+#    print(line_out)
+#    print(query_aligned_sequence)
 
 
 if __name__ == '__main__':
