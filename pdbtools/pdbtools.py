@@ -887,7 +887,6 @@ class pdbtools(object):
                                     previous_conect_list += [atom_idx] * \
                                         previous_bond_type
 
-
                     elif atom_name == ' N  ':
                         residue_idx2_previous = '%4d ' % (
                             int(residue_idx2[0:4])-1)
@@ -1209,71 +1208,6 @@ class pdbtools(object):
         except Exception as e:
             return e
         return e
-
-    @ classmethod
-    def read_coor_pdb(cls, input_file, exclude_Hs=True):
-        fp = open(input_file)
-        lines = fp.readlines()
-        fp.close()
-        model_dict = dict()
-        ligand_dict = dict()
-        for line in lines:
-            if line[0: 6] == 'MODEL ':
-                model_id = int(line[6:].strip())
-                ligand_dict = dict()
-
-            if line[0: 6] == 'ATOM  ' or line[0: 6] == 'HETATM':
-                residue_num = int(line[22: 26])
-#                residue_name = line[17:20].strip()
-#                residue_num2 = line[22:27]
-#                atom_number = int(line[6:11])
-                atom_name = line[12:16].strip()
-                if atom_name.startswith('H') and exclude_Hs:
-                    continue
-                coor = [float(line[30:38]), float(
-                    line[38:46]), float(line[46:54])]
-                coor = np.array(coor)
-                if residue_num not in ligand_dict:
-                    ligand_dict[residue_num] = list()
-                ligand_dict[residue_num] += [coor]
-
-            if line[0: 6] == 'ENDMDL':
-                model_dict[model_id] = ligand_dict
-        if len(model_dict.keys()) == 0:
-            model_dict[1] = ligand_dict
-
-        return model_dict
-
-#    @staticmethod
-    @ classmethod
-    def cal_ligand_size(cls, ligand):
-        coor_list = list()
-        for atom_coor in ligand:
-            coor_list.append(atom_coor)
-        coor_list = np.array(coor_list)
-        cmin = coor_list.min(axis=0)
-        cmax = coor_list.max(axis=0)
-        return cmin, cmax
-
-    @ classmethod
-    def cal_box(cls, ligand_file_list, exclude_Hs=True):
-        cmins = list()
-        cmaxs = list()
-        for ligand_file in ligand_file_list:
-            ligand_model_dict = cls.read_coor_pdb(
-                ligand_file, exclude_Hs=exclude_Hs)
-            for model_idx in ligand_model_dict.keys():
-                ligand_dict = ligand_model_dict[model_idx]
-                for ligand_num in ligand_dict.keys():
-                    ligand_coor = ligand_dict[ligand_num]
-                    cmin0, cmax0 = cls.cal_ligand_size(ligand_coor)
-                    cmins.append(cmin0)
-                    cmaxs.append(cmax0)
-        cmins = np.array(cmins)
-        cmaxs = np.array(cmaxs)
-        cmin = cmins.min(axis=0)
-        cmax = cmaxs.max(axis=0)
-        return cmin, cmax
 
 
 def main():

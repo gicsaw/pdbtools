@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import numpy as np
 from openbabel import pybel
 import subprocess
 
@@ -250,6 +251,110 @@ def pdbqt_to_pdb_ref(input_pdbqt_file, output_pdb_file, ref_pdb_file):
     subprocess.check_output(run_line.split(), stderr=subprocess.STDOUT,
                             universal_newlines=True)
     return
+
+
+def read_coor_pdb(input_file, exclude_Hs=True):
+    fp = open(input_file)
+    lines = fp.readlines()
+    fp.close()
+    model_dict = dict()
+    ligand_dict = dict()
+    for line in lines:
+        if line[0: 6] == 'MODEL ':
+            model_id = int(line[6:].strip())
+            ligand_dict = dict()
+
+        if line[0: 6] == 'ATOM  ' or line[0: 6] == 'HETATM':
+            residue_num = int(line[22: 26])
+#            residue_name = line[17:20].strip()
+#            residue_num2 = line[22:27]
+#            atom_number = int(line[6:11])
+            atom_name = line[12:16].strip()
+            if atom_name.startswith('H') and exclude_Hs:
+                continue
+            coor = [float(line[30:38]), float(
+                line[38:46]), float(line[46:54])]
+            coor = np.array(coor)
+            if residue_num not in ligand_dict:
+                ligand_dict[residue_num] = list()
+            ligand_dict[residue_num] += [coor]
+
+        if line[0: 6] == 'ENDMDL':
+            model_dict[model_id] = ligand_dict
+    if len(model_dict.keys()) == 0:
+        model_dict[1] = ligand_dict
+
+    return model_dict
+
+
+def cal_ligand_size(ligand):
+    coor_list = list()
+    for atom_coor in ligand:
+        coor_list.append(atom_coor)
+    coor_list = np.array(coor_list)
+    cmin = coor_list.min(axis=0)
+    cmax = coor_list.max(axis=0)
+    return cmin, cmax
+
+
+def cal_box(ligand_file_list, exclude_Hs=True):
+    cmins = list()
+    cmaxs = list()
+    for ligand_file in ligand_file_list:
+        ligand_model_dict = read_coor_pdb(
+            ligand_file, exclude_Hs=exclude_Hs)
+        for model_idx in ligand_model_dict.keys():
+            ligand_dict = ligand_model_dict[model_idx]
+            for ligand_num in ligand_dict.keys():
+                ligand_coor = ligand_dict[ligand_num]
+                cmin0, cmax0 = cal_ligand_size(ligand_coor)
+                cmins.append(cmin0)
+                cmaxs.append(cmax0)
+    cmins = np.array(cmins)
+    cmaxs = np.array(cmaxs)
+    cmin = cmins.min(axis=0)
+    cmax = cmaxs.max(axis=0)
+    return cmin, cmax
+
+
+def cal_box_size(ligand_file_list, margin=4.0, use_hydrogen=False):
+    """
+        cal box size from ligands
+        input:
+            ligand file list
+            margin: addtional box-size to ligand size, default 3.0
+            use_hydrogen: include hydrogen atom position, defalut Flase
+        output:
+            box_center : tuple (x, y, z)
+            box_size : tuple (wx, wy, wz)
+    """
+    cmins = list()
+    cmaxs = list()
+    for ligand_file in ligand_file_list:
+        file_format = ligand_file.split(".")[-1]
+        ms = list(pybel.readfile(file_format, ligand_file))
+        m = ms[0]
+        if not use_hydrogen:
+            m.removeh()
+        atoms = m.atoms
+        coor_list = list()
+        for atom in atoms:
+            coor_list.append(atom.coords)
+        coor = np.array(coor_list)
+
+        cmin0 = coor.min(axis=0)
+        cmax0 = coor.max(axis=0)
+        cmins.append(cmin0)
+        cmaxs.append(cmax0)
+    cmins = np.array(cmins)
+    cmaxs = np.array(cmaxs)
+    cmin = cmins.min(axis=0)
+    cmax = cmaxs.max(axis=0)
+
+    box_center = tuple((cmax+cmin)/2.0)
+    box_size = tuple((cmax-cmin) + margin*2)
+
+    return box_center, box_size
 
 
 def main():

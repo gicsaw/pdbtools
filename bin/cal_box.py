@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import sys
 import argparse
-from pdbtools.pdbtools import pdbtools
+import pdbtools.ligand_tools as ligand_tools
 
 
 class LoadFromConfig(argparse.Action):
@@ -47,7 +47,8 @@ def main():
         parser.print_usage()
         sys.exit()
 
-    (cmin, cmax) = pdbtools.cal_box(autobox_file_list, exclude_Hs=exclude_Hs)
+    (cmin, cmax) = ligand_tools.cal_box(
+        autobox_file_list, exclude_Hs=exclude_Hs)
 
     center = (cmin + cmax)/2.0
     if cubic_box:

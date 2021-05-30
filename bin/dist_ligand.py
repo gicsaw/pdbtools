@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import numpy as np
-from pdbtools.pdbtools import pdbtools
+import pdbtools.ligand_tools as ligand_tools
 
 
 def main():
@@ -25,20 +25,21 @@ def main():
     exclude_Hs = args.include_Hs
     radius_cut = args.radius_cut
 
-    ref_model_dict = pdbtools.read_coor_pdb(ref_file, exclude_Hs=exclude_Hs)
+    ref_model_dict = ligand_tools.read_coor_pdb(
+        ref_file, exclude_Hs=exclude_Hs)
     ref_dict = ref_model_dict[1]
     keys = sorted(ref_dict.keys())
-    ref_cmin, ref_cmax = pdbtools.cal_ligand_size(ref_dict[keys[0]])
+    ref_cmin, ref_cmax = ligand_tools.cal_ligand_size(ref_dict[keys[0]])
     ref_center = (ref_cmin + ref_cmax)/2.0
     ref_size = ref_cmax - ref_cmin
     ref_radius = np.linalg.norm(ref_size/2)
 
-    ligand_model_dict = pdbtools.read_coor_pdb(
+    ligand_model_dict = ligand_tools.read_coor_pdb(
         input_file, exclude_Hs=exclude_Hs)
     ligand_dict = ligand_model_dict[1]
     keys = sorted(ligand_dict.keys())
     for key in keys:
-        cmin, cmax = pdbtools.cal_ligand_size(ligand_dict[key])
+        cmin, cmax = ligand_tools.cal_ligand_size(ligand_dict[key])
         center = (cmin + cmax)/2.0
         size = cmax - cmin
         radius = np.linalg.norm(size/2)
