@@ -64,6 +64,12 @@ def fix_ligand_atom_idx(line_list):
     total_line_out = str()
 
     for line in line_list:
+        if line[0:6] == 'ATOM  ':
+            atom = line[12:16]
+            at = atom[0:2]
+            chain = line[21]
+            line = 'HETATM%s%s   UNK %s   1 %s' % (line[6:12], at,
+                                                   chain, line[27:])
         if line[0:6] == 'HETATM':
             atom = line[12:16]
             at = atom[0:2]
