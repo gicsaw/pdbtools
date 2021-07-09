@@ -172,6 +172,19 @@ def gen_3d_pdb(smi, ligand_file, timeout=10):
     return e
 
 
+
+def obabel_rewrite(cls, input_file, output_file, option=None):
+#    ms = pybel.readfile(mol_format, input_file)
+#    m = list(ms)[0]
+#    m.write('pdb', output_file, overwrite=True)
+    run_line = 'obabel %s -O %s' % (input_file, output_file)
+    if option is not None:
+        run_line += ' %s' % (option)
+    subprocess.check_output(run_line.split(),
+                            stderr=subprocess.STDOUT,
+                            universal_newlines=True)
+
+
 def pdb_to_pdbqt(pdb_file, pdbqt_file):
 
     run_line = 'prepare_ligand4.py -l %s -o %s' % (pdb_file, pdbqt_file)
