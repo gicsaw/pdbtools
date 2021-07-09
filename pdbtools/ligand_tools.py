@@ -41,7 +41,30 @@ def ligand_preparation(smi, neutralize, pH):
     return smi_p
 
 
-def check_gen3d(line_list):
+def check_gen3d(ligand_file, file_format=None):
+    if file_format is None:
+        file_format = ligand_file.strip().split('.')[-1]
+
+    ms = pybel.readfile(file_format, ligand_file)
+    ms = list(ms)
+    m = ms[0]
+    atoms = m.atoms
+    count_0 = 0
+    check_error = False
+
+    for atom in atoms:
+        coor = atom.coords
+        x, y, z = coor
+        if x == 0.0 and y == 0.0 and z == 0.0:
+            count_0 += 1
+        if count_0 >= 2:
+            check_error = True
+            break
+
+    return check_error
+
+
+def check_gen3d_pdb(line_list):
     count_0 = 0
     check_error = False
     for line in line_list:
@@ -85,7 +108,35 @@ def fix_ligand_atom_idx(line_list):
     return total_line_out
 
 
-def gen_3d(smi, ligand_file, timeout=10):
+def gen_3d(smi, ligand_file, file_format=None, timeout=10):
+    if file_format is None:
+        file_format = ligand_file.strip().split('.')[-1]
+    if file_format == 'pdb':
+        e = gen_3d_pdb(smi, ligand_file, timeout=timeout)
+        return e
+
+    run_line = 'obabel -:%s --gen3D -O %s' % (smi, ligand_file)
+    e = None
+    try:
+        result = subprocess.run(run_line.split(), capture_output=True,
+                                check=True, universal_newlines=True,
+                                timeout=timeout)
+        err_lines = result.stderr.split('\n')
+        for i, line in enumerate(err_lines):
+            idx = line.find('Error')
+            if idx != -1:
+                e = err_lines[i] + err_lines[i+1]
+                return e
+        check_error = check_gen3d(ligand_file, file_format)
+        if check_error:
+            e = 'error: gen 3d, two or more (0,0,0)'
+            return e
+    except Exception as e:
+        return e
+    return e
+
+
+def gen_3d_pdb(smi, ligand_file, timeout=10):
     """
         generate initial 3d conformation from SMILES
         input :
@@ -107,7 +158,7 @@ def gen_3d(smi, ligand_file, timeout=10):
                 return e
 
         result_lines = result.stdout.strip('\n').split('\n')
-        check_error = check_gen3d(result_lines)
+        check_error = check_gen3d_pdb(result_lines)
         if check_error:
             e = 'error: gen 3d, two or more (0,0,0)'
             return e
