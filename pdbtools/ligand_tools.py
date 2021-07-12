@@ -108,31 +108,67 @@ def fix_ligand_atom_idx(line_list):
     return total_line_out
 
 
-def gen_3d(smi, ligand_file, file_format=None, timeout=10):
+def add_mol_id(result, mol_id):
+
+    line_list = result.rstrip('\n').split('\n')
+    total_line_out = str()
+    check_mol_st = True
+    for line in line_list:
+        if check_mol_st is True:
+            if line.strip() == '':
+                line_out = mol_id + '\n'
+            else:
+                line_out = line + '\n'
+            check_mol_st = False
+        elif line[0:4] == '$$$$':
+            check_mol_st = True
+            line_out = line + '\n'
+        else:
+            line_out = line + '\n'
+
+        total_line_out += line_out
+
+    return total_line_out
+
+
+def gen_3d(smi, ligand_file, mol_id=None, file_format=None, timeout=10):
     if file_format is None:
         file_format = ligand_file.strip().split('.')[-1]
     if file_format == 'pdb':
         e = gen_3d_pdb(smi, ligand_file, timeout=timeout)
         return e
 
-    run_line = 'obabel -:%s --gen3D -O %s' % (smi, ligand_file)
+    run_line = 'obabel -:%s --gen3D -o%s' % (smi, file_format)
     e = None
     try:
         result = subprocess.run(run_line.split(), capture_output=True,
                                 check=True, universal_newlines=True,
                                 timeout=timeout)
-        err_lines = result.stderr.split('\n')
-        for i, line in enumerate(err_lines):
-            idx = line.find('Error')
-            if idx != -1:
-                e = err_lines[i] + err_lines[i+1]
-                return e
-        check_error = check_gen3d(ligand_file, file_format)
-        if check_error:
-            e = 'error: gen 3d, two or more (0,0,0)'
-            return e
     except Exception as e:
         return e
+
+    err_lines = result.stderr.split('\n')
+    for i, line in enumerate(err_lines):
+        idx = line.find('Error')
+        if idx != -1:
+            e = err_lines[i] + err_lines[i+1]
+            return e
+
+    result_data = result.stdout
+
+    if (file_format == 'mol' or file_format == 'sdf') and mol_id is not None:
+        total_line_out = add_mol_id(result_data, mol_id)
+    else:
+        total_line_out = result_data
+    fp = open(ligand_file, 'w')
+    fp.write(total_line_out)
+    fp.close()
+
+    check_error = check_gen3d(ligand_file, file_format)
+    if check_error:
+        e = 'error: gen 3d, two or more (0,0,0)'
+        return e
+
     return e
 
 
@@ -149,30 +185,31 @@ def gen_3d_pdb(smi, ligand_file, timeout=10):
         result = subprocess.run(run_line.split(), capture_output=True,
                                 check=True, universal_newlines=True,
                                 timeout=timeout)
-        # result.returncode
-        err_lines = result.stderr.split('\n')
-        for i, line in enumerate(err_lines):
-            idx = line.find('Error')
-            if idx != -1:
-                e = err_lines[i] + err_lines[i+1]
-                return e
-
-        result_lines = result.stdout.strip('\n').split('\n')
-        check_error = check_gen3d_pdb(result_lines)
-        if check_error:
-            e = 'error: gen 3d, two or more (0,0,0)'
-            return e
-        total_line_out = fix_ligand_atom_idx(result_lines)
-        fp = open(ligand_file, 'w')
-        fp.write(total_line_out)
-        fp.close()
-
     except Exception as e:
         return e
+
+    err_lines = result.stderr.split('\n')
+    for i, line in enumerate(err_lines):
+        idx = line.find('Error')
+        if idx != -1:
+            e = err_lines[i] + err_lines[i+1]
+            return e
+
+    result_lines = result.stdout.strip('\n').split('\n')
+    check_error = check_gen3d_pdb(result_lines)
+    if check_error:
+        e = 'error: gen 3d, two or more (0,0,0)'
+        return e
+
+    total_line_out = fix_ligand_atom_idx(result_lines)
+    fp = open(ligand_file, 'w')
+    fp.write(total_line_out)
+    fp.close()
+
     return e
 
 
-def obabel_rewrite(cls, input_file, output_file, option=None):
+def obabel_rewrite(input_file, output_file, option=None):
     #    ms = pybel.readfile(mol_format, input_file)
     #    m = list(ms)[0]
     #    m.write('pdb', output_file, overwrite=True)
