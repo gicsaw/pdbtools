@@ -1199,7 +1199,9 @@ class pdbtools(object):
     @ classmethod
     def protein_to_pdbqt(cls, pdb_file, pdbqt_file):
         run_line = 'prepare_receptor4.py -r %s -o %s' % (pdb_file, pdbqt_file)
-        run_line += ' -U nphs_lps_waters_nonstdres'
+#        run_line += ' -U nphs_lps_waters_nonstdres'
+        run_line += ' -U nphs_lps_nonstdres'
+
         e = None
         try:
             subprocess.check_output(run_line.split(),
