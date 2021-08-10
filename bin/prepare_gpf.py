@@ -88,7 +88,7 @@ def main():
     line_out = '%-40s # desolvation potential map\n' % line
     fp.write(line_out)
 
-    line = 'delectric %.4f ' % (dielectric)
+    line = 'dielectric %.4f ' % (dielectric)
     line_out = '%-40s # <0, AD4 distance-dep.diel;>0, constant\n' % line
     fp.write(line_out)
 
