@@ -267,7 +267,7 @@ class NWalign(object):
         align_seq = []
         for q3, d3 in self.align:
             q4, d4, count = self.num_to_seq(q, d, q3, d3)
-            align_seq.append((q3, q4, q4, d4, count))
+            align_seq.append((q3, d3, q4, d4, count))
         return align_seq, score
 
 
