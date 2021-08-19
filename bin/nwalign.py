@@ -233,7 +233,7 @@ class NWalign(object):
         q2 = [' ']*(len_q+len_d)
         d2 = [' ']*(len_q+len_d)
         k = 1
-        self.backtrack(len_q-1, len_d-1, k, H, E, F, G, q, d, q2, d2)
+        self.backtrack(len_q, len_d, k, H, E, F, G, q, d, q2, d2)
         return
 
     def num_to_seq(self, q, d, q3, d3):
