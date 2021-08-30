@@ -121,10 +121,17 @@ Blosum62 = {
 
 
 class NWalign(object):
-    def __init__(self, scoring_matrix=Blosum62, g_extend=1.0, g_open2=11.0):
+    def __init__(self, scoring_matrix=Blosum62, g_extend=1.0, g_open2=11.0, lower=0):
+        """
+            lower : if 0, None
+                    elif 1, q3 is lower where q3!=d3
+                    elif 2, q3 and d3 are lower where q3!=d3
+        """
+
         self.scoring_matrix = scoring_matrix
         self.g_extend = g_extend
         self.g_open = g_open2 - g_extend
+        self.lower = lower
 
     def g(self, l):
         return self.g_open + (l)*self.g_extend
@@ -228,12 +235,12 @@ class NWalign(object):
         return
 
     def dp(self, q, d, E, F, G, H):
-        len_q = len(q)
-        len_d = len(d)
+        len_q = len(q)+1
+        len_d = len(d)+1
         q2 = [' ']*(len_q+len_d)
         d2 = [' ']*(len_q+len_d)
         k = 1
-        self.backtrack(len_q, len_d, k, H, E, F, G, q, d, q2, d2)
+        self.backtrack(len_q-1, len_d-1, k, H, E, F, G, q, d, q2, d2)
         return
 
     def num_to_seq(self, q, d, q3, d3):
@@ -252,6 +259,11 @@ class NWalign(object):
                 dc = di
             else:
                 dc = d[di-1]
+            if qc!=dc:
+                if self.lower >= 1:
+                    qc=qc.lower()
+                if self.lower >= 2:
+                    dc=dc.lower()
             q4 += qc
             d4 += dc
             if qc == dc:
@@ -267,7 +279,7 @@ class NWalign(object):
         align_seq = []
         for q3, d3 in self.align:
             q4, d4, count = self.num_to_seq(q, d, q3, d3)
-            align_seq.append((q3, q4, q4, d4, count))
+            align_seq.append((q3, d3, q4, d4, count))
         return align_seq, score
 
 
