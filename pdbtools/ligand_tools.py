@@ -87,6 +87,7 @@ def fix_ligand_atom_idx(line_list):
     total_line_out = str()
 
     for line in line_list:
+        line = line.rstrip('\n')
         if line[0:6] == 'ATOM  ':
             atom = line[12:16]
             at = atom[0:2]
@@ -243,7 +244,7 @@ def obabel_rewrite(input_file, output_file, option=None):
     run_line = 'obabel %s -O %s' % (input_file, output_file)
     if option is not None:
         run_line += ' %s' % (option)
-    subprocess.check_output(run_line.split(),
+    a = subprocess.check_output(run_line.split(),
                             stderr=subprocess.STDOUT,
                             universal_newlines=True)
 

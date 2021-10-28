@@ -19,8 +19,8 @@ def main():
     parser.add_argument('-a', '--add_hydrogen', action='store_true',
                         required=False, help='add hydrogen')
 
-    parser.add_argument('--fix_atom_idx', action='store_true',
-                        required=False, help='fix_atom_idx')
+#    parser.add_argument('--fix_atom_idx', action='store_true',
+#                        required=False, help='fix_atom_idx')
 
     args = parser.parse_args()
     input_file = args.input_file
@@ -29,7 +29,9 @@ def main():
     pH = args.pH
     add_hydrogen = args.add_hydrogen
 
-    is_fix_atom_idx = args.fix_atom_idx
+#    is_fix_atom_idx = args.fix_atom_idx
+    is_fix_atom_idx = True
+
     out_format = output_file.split('.')[-1]
     if out_format == 'pdbqt':
         tmp_file = '.'.join(output_file.split('.')[:-1]) + '.pdb'
