@@ -13,7 +13,7 @@ setup(name='pdbtools',
                 'bin/dist_ligand.py', 'bin/fix_ligand_ref.py',
                 'bin/fix_protein.py', 'bin/gen3d.py', 'bin/pdb2pdbqt.py',
                 'bin/pdbqt2pdb_ref.py', 'bin/nwalign.py',
-                'bin/split_chain.py', 'bin/split_ligand.py'
+                'bin/split_chain.py', 'bin/split_ligand.py', 'bin/fix_ligand.py'
                ]
 )
 

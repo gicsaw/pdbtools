@@ -108,6 +108,33 @@ def fix_ligand_atom_idx(line_list):
     return total_line_out
 
 
+def fix_ligand(input_file, output_file, neutralize=False, pH=None, add_hydrogen=True, is_fix_atom_idx=True):
+    tmp_file = output_file
+    option_h = ''
+    if neutralize:
+        option_h += ' --neutralize'
+    if pH is None and add_hydrogen:
+        option_h += ' -h'
+    if option_h != '':
+        obabel_rewrite(input_file, tmp_file, option=option_h)
+    else:
+        tmp_file = input_file
+    option_h = ''
+    if pH is not None:
+        option_h += ' -p %.1f' % (pH)
+        obabel_rewrite(tmp_file, output_file, option=option_h)
+        tmp_file = output_file
+
+    if is_fix_atom_idx:
+        fp = open(tmp_file)
+        line_list = fp.readlines()
+        fp.close()
+        total_line_out = fix_ligand_atom_idx(line_list)
+        fp = open(output_file, 'w')
+        fp.write(total_line_out)
+        fp.close()
+
+
 def add_mol_id(result, mol_id):
 
     line_list = result.rstrip('\n').split('\n')
