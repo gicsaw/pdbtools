@@ -121,10 +121,17 @@ Blosum62 = {
 
 
 class NWalign(object):
-    def __init__(self, scoring_matrix=Blosum62, g_extend=1.0, g_open2=11.0):
+    def __init__(self, scoring_matrix=Blosum62, g_extend=1.0, g_open2=11.0, lower=0):
+        """
+            lower : if 0, None
+                    elif 1, q3 is lower where q3!=d3
+                    elif 2, q3 and d3 are lower where q3!=d3
+        """
+
         self.scoring_matrix = scoring_matrix
         self.g_extend = g_extend
         self.g_open = g_open2 - g_extend
+        self.lower = lower
 
     def g(self, l):
         return self.g_open + (l)*self.g_extend
@@ -252,6 +259,11 @@ class NWalign(object):
                 dc = di
             else:
                 dc = d[di-1]
+            if qc!=dc:
+                if self.lower >= 1:
+                    qc=qc.lower()
+                if self.lower >= 2:
+                    dc=dc.lower()
             q4 += qc
             d4 += dc
             if qc == dc:
