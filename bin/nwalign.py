@@ -228,8 +228,8 @@ class NWalign(object):
         return
 
     def dp(self, q, d, E, F, G, H):
-        len_q = len(q)
-        len_d = len(d)
+        len_q = len(q) + 1
+        len_d = len(d) + 1
         q2 = [' ']*(len_q+len_d)
         d2 = [' ']*(len_q+len_d)
         k = 1
