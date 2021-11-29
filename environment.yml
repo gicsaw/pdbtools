@@ -9,5 +9,5 @@ dependencies:
     openbabel >=3.1.0
     rdkit >=2020
     pandas
-    pdbfixer
+    pdbfixer >=1.8.1
     pymol-open-source >= 2.4
