@@ -2,7 +2,8 @@
 import os
 import copy
 import pdbfixer
-from simtk.openmm import app
+#from simtk.openmm import app
+from openmm import app
 import subprocess
 import numpy as np
 
