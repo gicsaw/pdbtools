@@ -259,11 +259,11 @@ class NWalign(object):
                 dc = di
             else:
                 dc = d[di-1]
-            if qc!=dc:
+            if qc != dc:
                 if self.lower >= 1:
-                    qc=qc.lower()
+                    qc = qc.lower()
                 if self.lower >= 2:
-                    dc=dc.lower()
+                    dc = dc.lower()
             q4 += qc
             d4 += dc
             if qc == dc:

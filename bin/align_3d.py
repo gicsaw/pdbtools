@@ -5,7 +5,9 @@ from pdbtools.pdbtools import pdbtools
 def main():
 
     import argparse
-    title_line = 'Fixer for protein pdb which is converted from pdbqt'
+    title_line = '''Align and rotate the 3d coordinates of the input pdb
+                    to the reference pdb
+    '''
     parser = argparse.ArgumentParser(description=title_line)
     parser.add_argument('-i', '--input_file', type=str, required=True,
                         help='input protein pdb file')
