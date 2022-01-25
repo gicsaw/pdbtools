@@ -13,7 +13,7 @@ python gen_chain_list.py -i list_mutation.txt -o list_chain.txt
 ### choose reference pdb (Ex: 2P2IA) for alignment 
 ./rot.sh list_chain.txt chain/3W2SA.pdb
 ./split_ligand.sh list_chain.txt
-ls chain/?????_???.pdb > list_ligand.txt
+ls chain/?????_???.pdb |grep -v HOH > list_ligand.txt
 ### if you want only chain A, ls chain/????A_???.pdb > list_ligand_A.txt
 ### or grep A_ list_ligand.txt > list_ligand_A.txt
 ### choose reference ligand (Ex: 2P2IA_608) to fine pocket ligands
@@ -26,9 +26,9 @@ cp list_ligand_new.txt list_ligand_select.txt
 ./cp_pdb.sh list_ligand_select.txt > list_final.txt
 ./check_water.sh list_ligand_select.txt
 ls select/*_HOH.pdb > water_file_list.txt
-python consensus_water_coor.py list_ligand_select.txt > consensus_water_list.txt
+consensus_water_coor.py list_ligand_select.txt > consensus_water_list.txt
 #select water in consensus_water_list and remove other waters
-python find_consensus_water.py select/1M17A_HOH.pdb consensus_water_list.txt
+find_consensus_water.py select/1M17A_HOH.pdb consensus_water_list.txt
 
 ### see select directory
 
