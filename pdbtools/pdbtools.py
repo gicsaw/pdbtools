@@ -779,8 +779,8 @@ class pdbtools(object):
                 line_out = line
             elif atom[2] != ' ':
                 line_out = line
-            elif atom[0] == 'H' or atom[1] == 'H':
-                line_out = line
+#            elif atom[0] == 'H' or atom[1] == 'H':
+#                line_out = line
             else:
                 at = atom[0:2]
                 if at not in atom_dict:
