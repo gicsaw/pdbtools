@@ -11,8 +11,8 @@ do
     ligand=${array[1]}
 #    echo $ligand_file
 #    fix_protein.py -i select/"$code"_receptor.pdb -o fix/"$code"_receptor.pdb
-#    fix_ligand_ref.py -i select/"$code"_$ligand.pdb -r cif/$ligand.cif -o fix/"$code"_$ligand.pdb -n -p 7.4 --fix_atom_idx
-    fix_ligand_ref.py -i select/"$code"_$ligand.pdb -r cif/$ligand.cif -o fix/"$code"_$ligand.pdb
+    fix_ligand_ref.py -i select/"$code"_$ligand.pdb -r cif/$ligand.cif -o fix/"$code"_$ligand.pdb -n -p 7.4 --fix_atom_idx
+#    fix_ligand_ref.py -i select/"$code"_$ligand.pdb -r cif/$ligand.cif -o fix/"$code"_$ligand.pdb --fix_atom_idx
 
 #    fix_ligand.py -i select/"$code"_$ligand.pdb -o fix/"$code"_$ligand.pdb -n -p 7.4 --fix_atom_idx
 
