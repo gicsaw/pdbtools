@@ -99,7 +99,7 @@ fix_protein.py -i select/2ITYA_receptor.pdb -o fix/2ITYA_receptor.pdb
 pdb2pdbqt.py -i fix/2ITYA_receptor.pdb -o fix/2ITYA_receptor.pdbqt -r
 pdb2pdbqt.py -i fix/2ITYA_IRE.pdb -o fix/2ITYA_IRE.pdbqt -l
 
-### generate docking box parameters 
-./auto_box.sh list_final.txt
+### generate docking box parameters for Vina
+./auto_box.sh list_final.txt > config.txt
 
 
