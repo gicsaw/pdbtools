@@ -61,8 +61,8 @@ find_consensus_water.py select/2ITYA_HOH.pdb consensus_water_list.txt
 fix_protein.py -i select/2ITYA_receptor.pdb -o fix/2ITYA_receptor.pdb
 
 ### pdb2pdbqt
-pdb2pdbqt -i fix/2ITYA_receptor.pdb -o fix/2ITYA_receptor.pdb -r
-pdb2pdbqt -i fix/2ITYA_IRE.pdb -o fix/2ITYA_IRE.pdb -l
+pdb2pdbqt.py -i fix/2ITYA_receptor.pdb -o fix/2ITYA_receptor.pdb -r
+pdb2pdbqt.py -i fix/2ITYA_IRE.pdb -o fix/2ITYA_IRE.pdb -l
 
 ### generate docking box parameters 
 ./auto_box.sh list_final.txt
