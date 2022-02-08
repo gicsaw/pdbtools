@@ -96,8 +96,8 @@ fix_protein.py -i select/2ITYA_receptor.pdb -o fix/2ITYA_receptor.pdb
 ### option -r: receptor, -l: ligand
 ### pdb2pdbqt -i $input_pdb -o $output_pdbqt -r (or -l)
 ### example
-pdb2pdbqt -i fix/2ITYA_receptor.pdb -o fix/2ITYA_receptor.pdb -r
-pdb2pdbqt -i fix/2ITYA_IRE.pdb -o fix/2ITYA_IRE.pdb -l
+pdb2pdbqt.py -i fix/2ITYA_receptor.pdb -o fix/2ITYA_receptor.pdb -r
+pdb2pdbqt.py -i fix/2ITYA_IRE.pdb -o fix/2ITYA_IRE.pdb -l
 
 ### generate docking box parameters 
 ./auto_box.sh list_final.txt
