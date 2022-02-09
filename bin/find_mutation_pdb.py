@@ -74,7 +74,7 @@ def read_pdb(file_name):
         elif line[0:6] == 'DBREF ':
             chain_id = line[12]
 #            uniprot_code = line[33:41].strip()
-            uniprot_id = line[42:52].strip()
+            uniprot_id = line[42:54].strip()
             if uniprot_id not in uniprot_chain_dict:
                 uniprot_chain_dict[uniprot_id] = list()
             uniprot_chain_dict[uniprot_id] += [chain_id]
@@ -222,7 +222,6 @@ def main():
 
         uniprot_chain_dict, chain_dict, ligand_chain_dict, ligand_name_dict = read_pdb(
             pdb_file)
-
         chain_list = uniprot_chain_dict[uniprot_id]
         chain_out = ''
         for chain_id in chain_list:
