@@ -21,7 +21,7 @@ find_mutation_pdb.py P00533_pdb_list_filter.txt P00533.fasta pdb > list_mutation
 python gen_chain_list.py -i list_mutation.txt -o list_chain.txt
 
 ### align pdb by reference pdb 
-./rot.sh list_chain.txt chain/3W2SA.pdb
+./rot.sh list_chain.txt chain/2ITYA.pdb
 
 ### split receptor and ligand 
 ./split_ligand.sh list_chain.txt

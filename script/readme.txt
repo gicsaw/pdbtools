@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ### see help: uniprot_dict.py 
-# echo "$UniPort_db_dir" > db_dir.txt
+# echo "db_dir=$UniPort_db_dir" > db_dir.txt
 ### db initialize
 ### uniprot_dict.py make_pickle
 
@@ -15,7 +15,7 @@ uniprot_dict.py pdb EGFR_HUMAN
 ### option: resolution (--resolution value), include NMR (--include_nmr), sequence range (-r ini-fin)...
 ### filter_pdb_list.py --resolution value -r ini-fin list_file > output_file
 ### example:
-filter_pdb_list.py --resolution 10 -r 650- P00533_pdb_list.txt > P00533_pdb_list_filter.txt
+filter_pdb_list.py --resolution 10 P00533_pdb_list.txt > P00533_pdb_list_filter.txt
 
 ### download pdb files to pdb_dir (default: pdb)
 ### dw_pdb.py $list_file $pdb_dir
@@ -41,7 +41,7 @@ python gen_chain_list.py -i list_mutation.txt -o list_chain.txt
 ### align pdb by reference pdb 
 ### ./rot.sh $list_chain_file $ref_pdb_file
 ### example:
-./rot.sh list_chain.txt chain/3W2SA.pdb
+./rot.sh list_chain.txt chain/2ITYA.pdb
 
 ### split receptor and ligand 
 ### split_ligand.sh $list_file
@@ -102,4 +102,6 @@ pdb2pdbqt.py -i fix/2ITYA_IRE.pdb -o fix/2ITYA_IRE.pdbqt -l
 ### generate docking box parameters for Vina
 ./auto_box.sh list_final.txt > config.txt
 
-
+#cd fix
+#qvina02 --config config.txt --ligand 2ITYA_IRE.pdbqt --out a.pdbqt
+#pdbqt2pdb_ref.py -i a.pdbqt -o a.pdb -r 2ITYA_IRE.pdb
