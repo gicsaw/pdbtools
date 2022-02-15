@@ -88,7 +88,7 @@ def fix_ligand_atom_idx(line_list):
 
     for line in line_list:
         line = line.rstrip('\n')
-        if line[0:6] == 'ATOM  ':
+        if line[0:6] == 'ATOM  ' or line[0:6] == 'HETATM':
             atom = line[12:16]
             at = atom[0:2]
             chain = line[21]
@@ -99,6 +99,7 @@ def fix_ligand_atom_idx(line_list):
             at = atom[0:2]
             if at not in atom_dict:
                 atom_dict[at] = 0
+#            chain = line[21]
             atom_dict[at] += 1
             idx = atom_dict[at]
             line_out = line[0:12] + '%s%-2d' % (at, idx) + line[16:]
@@ -244,9 +245,10 @@ def obabel_rewrite(input_file, output_file, option=None):
     run_line = 'obabel %s -O %s' % (input_file, output_file)
     if option is not None:
         run_line += ' %s' % (option)
-    a = subprocess.check_output(run_line.split(),
-                            stderr=subprocess.STDOUT,
-                            universal_newlines=True)
+    e = subprocess.check_output(run_line.split(),
+                                stderr=subprocess.STDOUT,
+                                universal_newlines=True)
+    return e
 
 
 def pdb_to_pdbqt(pdb_file, pdbqt_file):

@@ -15,13 +15,14 @@ def main():
     args = parser.parse_args()
     input_file = args.input_file
     output_file = args.output_file
-
     out_format = output_file.split('.')[-1]
     if out_format == 'pdbqt':
         tmp_file = '.'.join(output_file.split('.')[:-1]) + '.pdb'
     else:
         tmp_file = output_file
+
     pdbtools.fix_protein(input_file, tmp_file, add_missing_residue=True, pH=7.4)
+
     if out_format == 'pdbqt':
         e = pdbtools.protein_to_pdbqt(tmp_file, output_file)
         if e is not None:

@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 import os
 import copy
-import pdbfixer
 #from simtk.openmm import app
 from openmm import app
+import pdbfixer
 import subprocess
 import numpy as np
 
@@ -644,6 +644,7 @@ class pdbtools(object):
     @classmethod
     def fix_pdb(cls, protein_file, protein_fix_file, add_missing_residue=True, pH=7.4):
         fixer = pdbfixer.PDBFixer(filename=protein_file)
+
 #        fixer.applyMutations(["ALA-57-GLY"], "A")
 #        fixer.missingResidues = {}
         if add_missing_residue:
@@ -659,6 +660,7 @@ class pdbtools(object):
         fixer.findMissingAtoms()
         missing_atoms = fixer.missingAtoms
         missing_terminals = fixer.missingTerminals
+
         fixer.addMissingAtoms()
         if pH is not None:
             try:
@@ -666,6 +668,7 @@ class pdbtools(object):
             except Exception as e:
                 print('Error:', e, protein_file)
         fp_out = open(protein_fix_file, 'w')
+
         app.PDBFile.writeFile(fixer.topology, fixer.positions, fp_out, True)
         fp_out.close()
         return (missing_residues, nonstandard_residues,
