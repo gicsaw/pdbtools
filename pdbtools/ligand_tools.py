@@ -117,10 +117,12 @@ def fix_ligand(input_file, output_file, neutralize=False, pH=None, add_hydrogen=
         option_h += ' --neutralize'
     if pH is None and add_hydrogen:
         option_h += ' -h'
-    if option_h != '':
-        obabel_rewrite(input_file, tmp_file, option=option_h)
-    else:
-        tmp_file = input_file
+    obabel_rewrite(input_file, tmp_file, option=option_h)
+#    if option_h != '':
+#        obabel_rewrite(input_file, tmp_file, option=option_h)
+#    else:
+#        tmp_file = input_file
+
     option_h = ''
     if pH is not None:
         option_h += ' -p %.1f' % (pH)
