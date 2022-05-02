@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import sys
 import os
+import gzip
 import pickle
 from urllib import request
 
@@ -15,7 +16,7 @@ example:  uniprot_dict.py pdb EGFR_HUMAN 650-
 
 
 def read_uniprot(uniprot_file):
-    fp = open(uniprot_file)
+    fp = gzip.open(uniprot_file, 'rb')
 
     uniprot_dict = dict()
 #    check_signal = False
@@ -23,7 +24,8 @@ def read_uniprot(uniprot_file):
     check_domain = False
     check_region = False
     check_seq = False
-    for i, line in enumerate(fp):
+    for i, line_b in enumerate(fp):
+        line = line_b.decode('ascii')
         #        if i>100000:
         #            break
         if line[0:2] == "ID":
@@ -188,7 +190,7 @@ def main():
         if lis[0].strip() == 'db_dir':
             db_dir = lis[1].strip()
 
-    uniprot_file = db_dir + '/uniprot_sprot.dat'
+    uniprot_file = db_dir + '/uniprot_sprot.dat.gz'
     pickle_file = db_dir + '/uniprot.pkl'
     pickle_human_file = db_dir + '/uniprot_human.pkl'
 

@@ -2,12 +2,12 @@
 import sys
 import numpy as np
 from rdkit import Chem
-# from rdkit.Chem import rdFMCS
+from rdkit.Chem import rdFMCS
 
 
 def main():
     if len(sys.argv) < 3:
-        print('dock_rmsd.py mol_pdb ref_pdb')
+        print('dock_rmsd.py mol ref_mol')
         sys.exit()
 
     m_file = sys.argv[1]
@@ -32,12 +32,17 @@ def main():
     if m_ref is None:
         print(ref_file, 'is strange')
 
+    m = Chem.RemoveHs(m)
+    m_ref = Chem.RemoveHs(m_ref)
+
     smarts = Chem.MolToSmarts(m_ref)
 #    z = rdFMCS.FindMCS([m, m_ref])
+#    print(z.numAtoms, m.GetNumAtoms(), m_ref.GetNumAtoms())
 #    smarts = z.smartsString
 
     patt = Chem.MolFromSmarts(smarts)
     cs_list = m.GetSubstructMatches(patt, uniquify=False)
+#    print(cs_list)
     cs_ref = m_ref.GetSubstructMatch(patt)
 
     num_atoms = len(cs_ref)
