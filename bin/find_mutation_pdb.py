@@ -233,7 +233,7 @@ def find_m(d, para):
         chain = ligand_chain_dict[chain_id]
         keys = list(chain.keys())
         ligand_list += keys
-    ligand_list = list(set(ligand_list))
+    ligand_list = sorted(set(ligand_list))
 
     ligand_line = ''
     for ligand_id in ligand_list:
@@ -242,26 +242,29 @@ def find_m(d, para):
 
     chain_id = chain_list[0]
     res_dict = chain_dict[chain_id]
-
     res_inser_list = res_dict.keys()
     res_idx_list = list()
     seq_pdb = str()
-    check_ins = False
+    inser_dict = dict()
     for resi in res_inser_list:
-        res = resi[0:4]
+        res = int(resi[0:4])
         ins = resi[4]
         if ins != ' ':
-            check_ins = True
-            break
-        res_idx_list += [int(res)]
-    if check_ins:
-        line_out += 'check_ins'
-        print(pdb_code,'fffff')
-        return line_out
+            if res not in inser_dict:
+                inser_dict[res] = ''
+            inser_dict[res] += ins
+            continue
+        res_idx_list += [res]
+
     res_idx_list = sorted(res_idx_list)
     for idx in res_idx_list:
         resi = '%4d ' % (idx)
         seq_pdb += res_dict[resi]
+        if idx in inser_dict:
+            inser_list = sorted(inser_dict[idx])
+            for inser in inser_list:
+                resi = '%4d%s' % (idx, inser)
+                seq_pdb += res_dict[resi]
 
 #    start = min(res_idx_list)
 #    end = max(res_idx_list)
@@ -329,7 +332,7 @@ def worker(q, para, return_dict):
 
     nw, uniprot_id, seq_uniprot, pdb_dir = para
 
-    pid = os.getpid()
+#    pid = os.getpid()
     while True:
         qqq = q.get()
         if qqq == 'DONE':
