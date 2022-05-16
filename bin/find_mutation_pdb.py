@@ -2,6 +2,9 @@
 import sys
 import os
 from pdbtools import nwalign
+from multiprocessing import Manager
+from multiprocessing import Process
+from multiprocessing import Queue
 
 usage = '''
 mut_pdb.py list_file fasta_file pdb_dir
@@ -181,6 +184,164 @@ def read_fasta_chain(file_name):
     return fasta_dict
 
 
+def creator(q, data, num_sub_proc):
+    """
+        put data to queue
+        input: queue
+            data = [(idx1, molid1, smi1), (idx2, molid2, smi2), ...]
+            num_sub_proc (for end signal)
+    """
+    for d in data:
+        idx = d[0]
+        q.put((idx, d[1]))
+
+    for i in range(0, num_sub_proc):
+        q.put('DONE')
+
+
+def find_m(d, para):
+
+    pdb_code, method, resolution, chain_ini_fin = d
+    nw, uniprot_id, seq_uniprot, pdb_dir = para
+
+    line_out = pdb_code
+    chain_ids, ini_fin = chain_ini_fin.strip().split('=')
+
+    ini_fin2 = ini_fin.strip().split('-')
+    ini = int(ini_fin2[0])
+    fin = int(ini_fin2[1])
+
+#    fasta_file = 'pdb/%s.fasta' % (pdb_code)
+#    fasta_dict = read_fasta(fasta_file)
+    pdb_file = '%s/%s.pdb' % (pdb_dir, pdb_code)
+    if not os.path.exists(pdb_file):
+        line_out = pdb_file + 'does not exist'
+        return line_out
+    uniprot_chain_dict, chain_dict, ligand_chain_dict, ligand_name_dict = read_pdb(
+        pdb_file)
+    chain_list = uniprot_chain_dict[uniprot_id]
+    chain_out = ''
+    for chain_id in chain_list:
+        chain_out += '/%s' % chain_id
+
+    line_out += ';%s' % chain_out.strip('/')
+
+    ligand_list = list()
+    for chain_id in ligand_chain_dict:
+        if chain_id not in chain_list:
+            continue
+        chain = ligand_chain_dict[chain_id]
+        keys = list(chain.keys())
+        ligand_list += keys
+    ligand_list = list(set(ligand_list))
+
+    ligand_line = ''
+    for ligand_id in ligand_list:
+        ligand_line += '%s,' % ligand_id
+    line_out += ';%s' % ligand_line.strip(',')
+
+    chain_id = chain_list[0]
+    res_dict = chain_dict[chain_id]
+
+    res_inser_list = res_dict.keys()
+    res_idx_list = list()
+    seq_pdb = str()
+    check_ins = False
+    for resi in res_inser_list:
+        res = resi[0:4]
+        ins = resi[4]
+        if ins != ' ':
+            check_ins = True
+            break
+        res_idx_list += [int(res)]
+    if check_ins:
+        line_out += 'check_ins'
+        print(pdb_code,'fffff')
+        return line_out
+    res_idx_list = sorted(res_idx_list)
+    for idx in res_idx_list:
+        resi = '%4d ' % (idx)
+        seq_pdb += res_dict[resi]
+
+#    start = min(res_idx_list)
+#    end = max(res_idx_list)
+
+    seq2 = seq_uniprot[ini-1:fin]
+    gg = len(seq_pdb)-len(seq2)
+    seq1 = seq_pdb[gg:]
+
+    check = seq1 == seq2
+    if check:
+        line_out += ';wild_type'
+        return line_out
+    align, score = nw.NW(seq_pdb, seq_uniprot)
+
+    q3, d3, q4, d4, count = align[0]
+#    print(q3, d3)
+    s_count = 0
+    check_start = False
+    check_end = False
+    line_mutation = ''
+    gap_count = 0
+    for i in range(len(d4)):
+        if q4[i] == d4[i]:
+            if not check_start:
+                ini = d3[i]
+                check_start = True
+                s_count = 0
+            s_count += 1
+
+            check_end = False
+            gap_count = 0
+            fin = d3[i]
+        if q4[i] == '-' and d4[i] != '-':
+            if not check_end:
+                check_end = True
+            gap_count += 1
+        if gap_count >= 10 and s_count <= 5:
+            check_start = False
+    if not check_end:
+        fin = len(seq_uniprot)
+    for i in range(ini-1, fin):
+        if q4[i] != d4[i]:
+            if q4[i].upper() == 'X':
+                continue
+            ii = i
+            while d3[ii] == '-':
+                ii -= 1
+            num = d3[ii]
+            line_mutation += '%s%s%s,' % (d4[i], num, q4[i].upper())
+
+    line_mutation = line_mutation.strip(',')
+    if line_mutation == '':
+        line_mutation = 'wild_type'
+    line_out += ';%s' % (line_mutation)
+    return line_out
+
+
+def worker(q, para, return_dict):
+    """
+        generate subprocess for docking
+        input
+            q (queue)
+            return_dict
+    """
+
+    nw, uniprot_id, seq_uniprot, pdb_dir = para
+
+    pid = os.getpid()
+    while True:
+        qqq = q.get()
+        if qqq == 'DONE':
+            # print('proc =', os.getpid())
+            break
+
+        (idx, d) = qqq
+        pdb_code, method, resolution, chain_ini_fin = d
+
+        return_dict[idx] = find_m(d, para)
+
+
 def main():
     if len(sys.argv) < 3:
         print(usage)
@@ -194,6 +355,10 @@ def main():
     if len(sys.argv) >= 4:
         pdb_dir = sys.argv[3]
 
+    num_sub_proc = 16
+    if len(sys.argv) >= 5:
+        num_sub_proc = int(sys.argv[4])
+
 #    list_file = '%s_pdb_list.txt' % uniprot_code
 #    fasta_file = '%s.fasta' % uniprot_code
     pdb_list = [x.strip().split(';') for x in open(list_file)]
@@ -203,122 +368,33 @@ def main():
     seq_uniprot = fasta_dict[uniprot_code]
 
     nw = nwalign.NWalign(g_extend=1.0, g_open2=11.0, lower=1)
+    num_data = len(pdb_list)
+    num_sub_proc = min(num_sub_proc, num_data)
 
-    for data in pdb_list:
-        pdb_code, method, resolution, chain_ini_fin = data
-        line_out = pdb_code
-        chain_ids, ini_fin = chain_ini_fin.strip().split('=')
+    data = enumerate(pdb_list)
+    q = Queue()
+    manager = Manager()
+    return_dict = manager.dict()
+    proc_master = Process(target=creator,
+                          args=(q, data, num_sub_proc))
+    proc_master.start()
 
-        ini_fin2 = ini_fin.strip().split('-')
-        ini = int(ini_fin2[0])
-        fin = int(ini_fin2[1])
+    para = (nw, uniprot_id, seq_uniprot, pdb_dir)
+    procs = []
+    for sub_id in range(0, num_sub_proc):
+        proc = Process(target=worker, args=(q, para, return_dict))
+        procs.append(proc)
+        proc.start()
 
-#        fasta_file = 'pdb/%s.fasta' % (pdb_code)
-#        fasta_dict = read_fasta(fasta_file)
-        pdb_file = '%s/%s.pdb' % (pdb_dir, pdb_code)
-        if not os.path.exists(pdb_file):
-            print(pdb_file, 'does not exist')
-            continue
+    q.close()
+    q.join_thread()
+    proc_master.join()
+    for proc in procs:
+        proc.join()
+    keys = sorted(return_dict.keys())
 
-        uniprot_chain_dict, chain_dict, ligand_chain_dict, ligand_name_dict = read_pdb(
-            pdb_file)
-        chain_list = uniprot_chain_dict[uniprot_id]
-        chain_out = ''
-        for chain_id in chain_list:
-            chain_out += '/%s' % chain_id
-
-        line_out += ';%s' % chain_out.strip('/')
-
-        ligand_list = list()
-        for chain_id in ligand_chain_dict:
-            if chain_id not in chain_list:
-                continue
-            chain = ligand_chain_dict[chain_id]
-            keys = list(chain.keys())
-            ligand_list += keys
-        ligand_list = list(set(ligand_list))
-
-        ligand_line = ''
-        for ligand_id in ligand_list:
-            ligand_line += '%s,' % ligand_id
-        line_out += ';%s' % ligand_line.strip(',')
-
-        chain_id = chain_list[0]
-        res_dict = chain_dict[chain_id]
-
-        res_inser_list = res_dict.keys()
-        res_idx_list = list()
-        seq_pdb = str()
-        check_ins = False
-        for resi in res_inser_list:
-            res = resi[0:4]
-            ins = resi[4]
-            if ins != ' ':
-                check_ins = True
-                break
-            res_idx_list += [int(res)]
-        if check_ins:
-            continue
-        res_idx_list = sorted(res_idx_list)
-        for idx in res_idx_list:
-            resi = '%4d ' % (idx)
-            seq_pdb += res_dict[resi]
-
-#        start = min(res_idx_list)
-#        end = max(res_idx_list)
-
-        seq2 = seq_uniprot[ini-1:fin]
-        gg = len(seq_pdb)-len(seq2)
-        seq1 = seq_pdb[gg:]
-
-        check = seq1 == seq2
-        if check:
-            line_out += ';wild_type'
-            print(line_out)
-            continue
-        align, score = nw.NW(seq_pdb, seq_uniprot)
-
-        q3, d3, q4, d4, count = align[0]
-#        print(q3, d3)
-        s_count = 0
-        check_start = False
-        check_end = False
-        line_mutation = ''
-        gap_count = 0
-        for i in range(len(d4)):
-            if q4[i] == d4[i]:
-                if not check_start:
-                    ini = d3[i]
-                    check_start = True
-                    s_count = 0
-                s_count += 1
-
-                check_end = False
-                gap_count = 0
-                fin = d3[i]
-            if q4[i] == '-' and d4[i] != '-':
-                if not check_end:
-                    check_end = True
-                gap_count += 1
-            if gap_count >= 10 and s_count <= 5:
-                check_start = False
-        if not check_end:
-            fin = len(seq_uniprot)
-        for i in range(ini-1, fin):
-            if q4[i] != d4[i]:
-                if q4[i].upper() == 'X':
-                    continue
-                ii = i
-                while d3[ii] == '-':
-                    ii -= 1
-                num = d3[ii]
-                line_mutation += '%s%s%s,' % (d4[i], num, q4[i].upper())
-
-        line_mutation = line_mutation.strip(',')
-        if line_mutation == '':
-            line_mutation = 'wild_type'
-        line_out += ';%s' % (line_mutation)
-
+    for key in keys:
+        line_out = return_dict[key]
         print(line_out)
 
 
